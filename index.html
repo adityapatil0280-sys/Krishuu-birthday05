@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday ✨</title>
+  <meta name="description" content="A magical, anime-inspired birthday surprise page with music, gallery, confetti and QR-code maker." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600..900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-hp: radial-gradient(1200px 600px at 70% -10%, rgba(255,212,121,.35), transparent 60%),
+                radial-gradient(900px 500px at 0% 110%, rgba(165,214,255,.25), transparent 60%),
+                #0b0e1a; /* starry night */
+      --bg-ds: radial-gradient(1200px 600px at -20% -10%, rgba(255,108,108,.18), transparent 60%),
+                radial-gradient(900px 500px at 120% 110%, rgba(92,225,230,.18), transparent 60%),
+                #0d0f12; /* moody */
+      --text: #f6f7fb;
+      --muted: #cfd3e1;
+      --accent: #ffd76b; /* candles glow */
+      --accent-2: #55f2ff; /* demon slayer teal */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body {
+      margin: 0;
+      font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+      background: var(--bg-hp);
+      transition: background 600ms ease;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; position: sticky; top:0; backdrop-filter: blur(6px); background: rgba(10,12,22,.35); padding:12px 16px; border-bottom: 1px solid rgba(255,255,255,.08); z-index: 40; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand .logo { width:36px; height:36px; border-radius:12px; box-shadow:0 0 18px rgba(255,215,107,.35) inset, 0 0 22px rgba(85,242,255,.25); background: conic-gradient(from 0deg, #ffd76b, #55f2ff, #ffd76b); filter: blur(.2px); }
+    .brand h1 { font-family: Cinzel, serif; font-weight: 800; letter-spacing:.5px; margin:0; font-size: 18px; }
+    .toolbar { display:flex; align-items:center; gap:8px; }
+    button, .btn {
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.02));
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.15);
+      padding: 10px 14px; border-radius: 14px; cursor: pointer; font-weight: 600;
+      box-shadow: 0 6px 18px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.05);
+      transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.08); }
+    .hero { position:relative; padding: 72px 0 36px; text-align:center; }
+    .title { font-family: Cinzel, serif; font-weight: 900; font-size: clamp(38px, 6vw, 66px); line-height:1.05; margin: 0 0 10px; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
+    .subtitle { margin:0; opacity:.9; font-size: clamp(14px, 2.2vw, 18px); color: var(--muted); }
+    .glow { color: var(--accent); text-shadow: 0 0 25px rgba(255,215,107,.55), 0 0 45px rgba(255,215,107,.35); }
+    .teal { color: var(--accent-2); text-shadow: 0 0 25px rgba(85,242,255,.55), 0 0 45px rgba(85,242,255,.35); }
+
+    /* Floating candles (HP theme) */
+    .candles { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .candle { position:absolute; width: 6px; height: 20px; background: #fff3cc; box-shadow: 0 0 18px #ffd76b; border-radius: 3px; animation: float 8s ease-in-out infinite; }
+    .candle:after { content:""; position:absolute; top:-8px; left:50%; transform:translateX(-50%); width:6px; height:8px; background: radial-gradient(circle at 50% 20%, #fff, #ffd76b 55%, transparent 60%); border-radius:50%; filter: blur(.2px); }
+    @keyframes float { 0%,100%{ transform: translateY(0)} 50% { transform: translateY(-30px)} }
+
+    /* Sakura petals (DS theme) */
+    .petals { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+    .petal { position:absolute; width:12px; height:10px; background: #ff6b9f; border-radius: 10px 10px 10px 0; opacity:.85; filter: blur(.1px);
+      animation: fall 9s linear infinite; transform: rotate(25deg);
+    }
+    @keyframes fall { 0%{ transform: translateY(-10vh) rotate(25deg)} 100%{ transform: translateY(110vh) rotate(380deg)} }
+
+    /* Card sections */
+    .card { background: rgba(12,14,22,.55); border: 1px solid rgba(255,255,255,.1); padding: 22px; border-radius: 18px; box-shadow: 0 8px 28px rgba(0,0,0,.35); }
+    .grid { display:grid; gap:18px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+    .message { font-size: 18px; line-height:1.75; }
+    .type { border-right: .1em solid rgba(255,255,255,.6); white-space: pre-wrap; overflow: hidden; }
+
+    .gallery { display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
+    .gallery img { width:100%; height: 180px; object-fit: cover; border-radius: 14px; border:1px solid rgba(255,255,255,.1); box-shadow: 0 10px 24px rgba(0,0,0,.35); }
+
+    .audio-controls { display:flex; gap:10px; align-items:center; }
+
+    /* Theme badges */
+    .pill { font-size:12px; padding:6px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); }
+
+    footer { text-align:center; color: #9aa3b6; padding: 28px 0 60px; }
+
+    /* Demon Slayer slash */
+    .slash { position: absolute; left: -20%; top: 30%; width: 140%; height: 4px; background: linear-gradient(90deg, transparent, rgba(85,242,255,.95), transparent); filter: blur(.6px); box-shadow: 0 0 24px rgba(85,242,255,.75); transform: rotate(-8deg) translateX(-120%); animation: slash 2.2s ease-out 1.2s forwards; opacity:.7 }
+    @keyframes slash { to { transform: rotate(-8deg) translateX(0%);} }
+
+    /* Responsive tweaks */
+    @media (max-width: 640px){ .gallery{grid-template-columns: repeat(2,1fr);} }
+  </style>
+</head>
+<body data-theme="hp">
+    <!-- PASSWORD SCREEN -->
+<div id="password-screen" style="
+position: fixed;
+inset: 0;
+background: #0b0e1a;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 9999;
+font-family: Poppins, sans-serif;
+color: white;
+text-align: center;
+">
+<h2 style="margin-bottom:1rem">Enter Password to Continue 🔒</h2>
+<input type="password" id="password-input" placeholder="Enter password"
+  style="padding:10px; border-radius:8px; border:1px solid #555; font-size:16px;">
+<button onclick="checkPassword()" style="margin-top:12px; padding:10px 18px; border:none; border-radius:8px; font-weight:600; cursor:pointer; background:#ffd76b; color:#000;">
+  Unlock
+</button>
+<p id="error" style="color:#ff6b6b; display:none; margin-top:10px;">Wrong password! Try again.</p>
+</div>
+
+  <!-- BACKGROUND DECOR -->
+  <div class="candles" id="candles"></div>
+  <div class="petals" id="petals" style="display:none"></div>
+  <div class="slash" id="slash" style="display:none"></div>
+
+  <header>
+    <div>
+      <span class="pill" id="themePill">Harry Potter✨</span>
+    </div>
+    <div class="toolbar">
+      <button id="toggleTheme" title="Switch Theme">Switch Theme</button>
+      <button id="confettiBtn" title="Celebrate!">🎉 Celebrate</button>
+      <button id="shareBtn" title="Share">🔗 Share</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h2 class="title" id="title">Happy Birthday, <span class="glow" id="nameText">Bestie</span>!</h2>
+      <p class="subtitle" id="tagline">Wishing you a day filled with magic, adventures and endless smiles 💫</p>
+    </section>
+
+    <section class="grid" aria-label="Content">
+      <article class="card">
+        <h3 style="margin-top:0">A Note From Me</h3>
+        <p class="message type" id="typed"></p>
+      </article>
+
+      <article class="card">
+        <h3 style="margin-top:0">Our Moments</h3>
+        <div class="gallery" id="gallery">
+          <!-- Replace with your photos (keep the same count or add more) -->
+          <img src="Photo-1.jpg" alt="Memory 1"/>
+          <img src="Photo-2.jpg" alt="Memory 2"/>
+          <img src="Photo-3.jpg" alt="Memory 3"/>
+          <img src="Photo-4.jpg" alt="Memory 4"/>
+          <img src="Photo-5.jpg" alt="Memory 5"/>
+          <img src="Photo-6.jpg" alt="Memory 6"/>
+        </div>
+      </article>
+
+      <article>
+        <h3 style="margin-top:0"></h3>
+        <div class="audio-controls">
+          <!-- Replace src with your MP3/OGG link (hosted or local file in same folder) -->
+          <audio id="music" preload="auto">
+  <source src="krish.mp3" type="audio/mpeg">
+</audio>
+
+        </div>
+        <p style="color:var(--muted);margin:.6rem 0 0;font-size:13px"></p>
+      </article>
+
+      
+
+    <footer>
+      Made with lots of hate for my <span id="footerName">Duchkii</span>.
+    </footer>
+  </main>
+
+  <canvas id="confetti" style="position:fixed; inset:0; pointer-events:none; z-index: 50"></canvas>
+
+  <script>
+    // =========================
+    // CONFIG — EDIT THESE
+    // =========================
+    const CONFIG = {
+      friendName: "Krishuu", // ← put her name here
+      tagline: "Wishing you a day filled with magic, adventures and endless smiles 💫",
+      message: `Dear Babbde,\n\nAnother trip around the sun and you keep getting more awesome! Thank you for being my chaos partner, therapist, meme curator and the bravest human I know.\n\nToday is all about you — may your year be packed with love, luck, and legendary memories with me 😜.\n\nHappy Birthday! 💖`,
+      musicSrc: "krish.mp3", // optional: e.g. "your-song.mp3" or a hosted URL
+      startTheme: "ds" // 'hp' or 'ds'
+    };
+
+    // Apply initial text
+    const nameText = document.getElementById('nameText');
+    const footerName = document.getElementById('footerName');
+    const title = document.getElementById('title');
+    const tagline = document.getElementById('tagline');
+    nameText.textContent = CONFIG.friendName;
+    footerName.textContent = CONFIG.friendName;
+    tagline.textContent = CONFIG.tagline;
+
+    // Typewriter
+    const typedEl = document.getElementById('typed');
+    function typeText(text, i=0){
+      if(i <= text.length){ typedEl.textContent = text.slice(0,i); setTimeout(()=>typeText(text, i+1), 20); }
+      else { typedEl.classList.remove('type'); }
+    }
+    typeText(CONFIG.message);
+
+    // Music control
+    if(CONFIG.musicSrc){
+       const audio = document.getElementById('music');
+  audio.querySelector('source').src = CONFIG.musicSrc;
+  audio.load();
+}
+
+    // Theme switching
+    const root = document.body;
+    const candles = document.getElementById('candles');
+    const petals = document.getElementById('petals');
+    const slash = document.getElementById('slash');
+    const themePill = document.getElementById('themePill');
+    function setTheme(mode){
+      root.setAttribute('data-theme', mode);
+      if(mode === 'hp'){
+        document.body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-hp');
+        themePill.textContent = 'Harry Potter ✨';
+        candles.style.display = 'block'; petals.style.display = 'none'; slash.style.display='none';
+        nameText.classList.add('glow'); nameText.classList.remove('teal');
+      } else {
+        document.body.style.background = getComputedStyle(document.documentElement).getPropertyValue('--bg-ds');
+        themePill.textContent = 'Demon Slayer 🔥';
+        candles.style.display = 'none'; petals.style.display = 'block'; slash.style.display='block';
+        nameText.classList.add('teal'); nameText.classList.remove('glow');
+      }
+    }
+    setTheme(CONFIG.startTheme);
+
+    // Spawn floating candles
+    function spawnCandles(){
+      candles.innerHTML = '';
+      const count = 24;
+      for(let i=0;i<count;i++){
+        const c = document.createElement('div'); c.className='candle';
+        c.style.left = Math.random()*100+'%';
+        c.style.top = (Math.random()*60+5)+'%';
+        c.style.animationDelay = (Math.random()*8)+'s';
+        candles.appendChild(c);
+      }
+    }
+    spawnCandles();
+
+    // Sakura petals
+    function spawnPetals(){
+      petals.innerHTML='';
+      const count = 30;
+      for(let i=0;i<count;i++){
+        const p = document.createElement('div'); p.className='petal';
+        p.style.left = Math.random()*100+'%';
+        p.style.top = (-Math.random()*80)+'px';
+        p.style.animationDelay = (Math.random()*8)+'s';
+        p.style.opacity = (0.6 + Math.random()*0.4);
+        petals.appendChild(p);
+      }
+    }
+    spawnPetals();
+
+    // Toggle theme button
+    document.getElementById('toggleTheme').addEventListener('click', ()=>{
+      const mode = root.getAttribute('data-theme')==='hp' ? 'ds' : 'hp';
+      setTheme(mode);
+    });
+
+    // Confetti (tiny canvas)
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let particles=[]; let rafId=null;
+    function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+    addEventListener('resize', resize); resize();
+    function burst(x, y){
+      for(let i=0;i<160;i++){
+        particles.push({ x, y, r: Math.random()*3+1, vx:(Math.random()-0.5)*6, vy: (Math.random()*-4-1), ay: 0.12, life: Math.random()*120+60 });
+      }
+      if(!rafId) animate();
+    }
+    function animate(){
+      rafId = requestAnimationFrame(animate);
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+      particles = particles.filter(p=> p.life>0);
+      particles.forEach(p=>{
+        p.vy += p.ay; p.x += p.vx; p.y += p.vy; p.life--;
+        ctx.globalAlpha = Math.max(0, p.life/180);
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fillStyle = 'white'; ctx.fill();
+      });
+      if(particles.length===0){ cancelAnimationFrame(rafId); rafId=null; }
+    }
+    document.getElementById('confettiBtn').addEventListener('click', ()=> burst(innerWidth/2, innerHeight/3));
+
+    // Share link
+    document.getElementById('shareBtn').addEventListener('click', async ()=>{
+      const shareData = { title: document.title, text: 'Open your surprise ✨', url: location.href };
+      try{ if(navigator.share){ await navigator.share(shareData);} else { await navigator.clipboard.writeText(location.href); alert('Link copied!'); } }catch{}
+    });
+
+    // QR generator using Google Chart API (simple & reliable)
+    const qrBtn = document.getElementById('qrBtn');
+    const qrUrl = document.getElementById('qrUrl');
+    const qrImg = document.getElementById('qrImg');
+    const qrHint = document.getElementById('qrHint');
+    const qrDownload = document.getElementById('qrDownload');
+
+    qrBtn.addEventListener('click', ()=>{
+      const url = qrUrl.value.trim();
+      if(!/^https?:\/\//i.test(url)) { alert('Please paste a valid URL that starts with http or https'); return; }
+      const api = `https://chart.googleapis.com/chart?cht=qr&chs=512x512&chl=${encodeURIComponent(url)}`;
+      qrImg.src = api; qrImg.style.display='block';
+      qrDownload.href = api; qrDownload.style.display='inline-block';
+      qrHint.style.display='none';
+    });
+
+    // Accessibility: trigger confetti on title click
+    title.addEventListener('click', ()=> burst(innerWidth/2, innerHeight/3));
+    // Password protection
+function checkPassword() {
+  const input = document.getElementById("password-input").value;
+  if (input === "AK47") {
+    document.getElementById("password-screen").style.display = "none";
+
+    // Play music automatically after unlock
+    if(CONFIG.musicSrc){
+      const audio = document.getElementById("music");
+      audio.play().catch(err => console.warn("Autoplay blocked:", err));
+    }
+  } else {
+    document.getElementById("error").style.display = "block";
+  }
+}
+
+  
+
+  </script>
+</body>
+</html>
+
